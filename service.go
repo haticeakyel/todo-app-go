@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	model "github.com/haticeakyel/back-end/models"
 )
 
 type Service struct {
@@ -28,4 +29,18 @@ func GenerateUUID(length int) string {
 	}
 
 	return uuid[0:length]
+}
+
+func (s *Service) CreateTodo (todoDto model.TodoDTO)(*model.Todo, error){
+	todoCreate := model.Todo{
+		ID: GenerateUUID(8),
+		Name: todoDto.Name,
+		Description: todoDto.Description,
+	}
+	todoCreated, err := s.Repository.CreateTodo(todoCreate)
+	if err!= nil{
+		return nil, err
+	}
+
+	return todoCreated,nil
 }

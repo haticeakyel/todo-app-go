@@ -27,5 +27,8 @@ func SetupApp(api *Api) *fiber.App {
 		AllowCredentials: true,
 	}))
 
+	app.Post("/addTodo",api.HandleAddTodo)
+	app.Get("/todos")
+	
 	return app
 }

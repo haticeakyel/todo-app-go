@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	model "github.com/haticeakyel/back-end/models"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -28,4 +30,17 @@ func NewRepository() (*Repository, error) {
 	}
 
 	return &Repository{client}, nil
+}
+
+func (repository Repository) CreateTodo(todoData model.Todo)(*model.Todo, error){
+	collection := repository.client.Database("todo").Collection("todos")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := collection.InsertOne(ctx, todoData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to insert todo: %w", err)
+	}
+
+	return &todoData, nil
 }
