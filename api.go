@@ -34,3 +34,28 @@ func (a *Api) HandleAddTodo(c *fiber.Ctx) error {
 	}
 	return nil
 }
+
+func(a *Api) HandleGetTodo(c *fiber.Ctx) error {
+	ID := c.Params("id")
+	todo, err := a.Service.GetTodo(ID)
+	if err != nil {
+		c.Status(fiber.StatusInternalServerError)
+		return err
+	}
+
+	c.JSON(todo)
+	c.Status(fiber.StatusOK)
+	return nil
+}
+
+func (a *Api) HandleGetTodos (c *fiber.Ctx) error{
+	todos, err := a.Service.GetTodos()
+	switch err{
+	case nil:
+		c.JSON(todos)
+		c.Status(fiber.StatusOK)
+	default:
+		c.Status(fiber.StatusInternalServerError)
+	}
+	return nil
+}

@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	model "github.com/haticeakyel/back-end/models"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -43,4 +45,45 @@ func (repository Repository) CreateTodo(todoData model.Todo)(*model.Todo, error)
 	}
 
 	return &todoData, nil
+}
+
+func (repository Repository) GetTodos() ([]model.Todo, error){
+	collection := repository.client.Database("todo").Collection("todos")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	cur, err := collection.Find(ctx, bson.M{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	todos := []model.Todo{}
+	for cur.Next(ctx) {
+		var todo model.Todo
+		err := cur.Decode(&todo)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		todos = append(todos, todo)
+
+	}
+
+	return todos, nil
+}
+
+func (repository Repository) GetTodo(ID string) (*model.Todo, error){
+	collection := repository.client.Database("todo").Collection("todos")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	todo := &model.Todo{}
+	filters := bson.M{"id": ID}
+	err := collection.FindOne(ctx, filters).Decode(todo)
+	if err != nil {
+		return nil, err
+	}
+
+	return todo, nil
 }

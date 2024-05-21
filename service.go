@@ -44,3 +44,23 @@ func (s *Service) CreateTodo (todoDto model.TodoDTO)(*model.Todo, error){
 
 	return todoCreated,nil
 }
+
+func (s *Service) GetTodo(ID string)(*model.Todo, error){
+	gotTodo, err := s.Repository.GetTodo(ID)
+
+	if err != nil{
+		return nil, err
+	}
+
+	return gotTodo, nil
+}
+
+func (s *Service) GetTodos() ([]model.Todo, error){
+	todoList, err := s.Repository.GetTodos()
+
+	if err != nil{
+		return nil, err
+	}
+
+	return todoList,nil
+}
