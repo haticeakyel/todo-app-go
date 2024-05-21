@@ -74,3 +74,14 @@ func (s *Service) UpdateTodo(todoDTO model.TodoDTO, ID string) (model.Todo, erro
 
 	return updatedTodo, nil
 }
+
+func (s *Service) DeleteTodo(ID string) error {
+
+	err := s.Repository.DeleteTodo(ID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

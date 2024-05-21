@@ -83,3 +83,18 @@ func (a *Api) HandleUpdateTodo(c *fiber.Ctx) error {
 
 	return nil
 }
+
+func (a *Api) HandleDeleteTodo(c *fiber.Ctx) error {
+	ID := c.Params("id")
+
+	err := a.Service.DeleteTodo(ID)
+
+	switch err {
+	case nil:
+		c.Status(fiber.StatusNoContent)
+	default:
+		c.Status(fiber.StatusInternalServerError)
+	}
+
+	return nil
+}

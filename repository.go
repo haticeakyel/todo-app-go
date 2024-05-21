@@ -34,7 +34,7 @@ func NewRepository() (*Repository, error) {
 	return &Repository{client}, nil
 }
 
-func (repository Repository) CreateTodo(todoData model.Todo)(*model.Todo, error){
+func (repository Repository) CreateTodo(todoData model.Todo) (*model.Todo, error) {
 	collection := repository.client.Database("todo").Collection("todos")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -47,7 +47,7 @@ func (repository Repository) CreateTodo(todoData model.Todo)(*model.Todo, error)
 	return &todoData, nil
 }
 
-func (repository Repository) GetTodos() ([]model.Todo, error){
+func (repository Repository) GetTodos() ([]model.Todo, error) {
 	collection := repository.client.Database("todo").Collection("todos")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -73,7 +73,7 @@ func (repository Repository) GetTodos() ([]model.Todo, error){
 	return todos, nil
 }
 
-func (repository Repository) GetTodo(ID string) (*model.Todo, error){
+func (repository Repository) GetTodo(ID string) (*model.Todo, error) {
 	collection := repository.client.Database("todo").Collection("todos")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -94,9 +94,9 @@ func (repository *Repository) editTodo(todoDTO model.TodoDTO, ID string) (model.
 	defer cancel()
 
 	updateTodo := bson.M{
-		"id":            ID,
-		"name":          todoDTO.Name,
-		"description":   todoDTO.Description,
+		"id":          ID,
+		"name":        todoDTO.Name,
+		"description": todoDTO.Description,
 	}
 
 	_, err := collection.ReplaceOne(ctx, bson.M{"id": ID}, updateTodo)
@@ -112,4 +112,18 @@ func (repository *Repository) editTodo(todoDTO model.TodoDTO, ID string) (model.
 	}
 
 	return *updatedTodo, nil
+}
+
+func (repository *Repository) DeleteTodo(ID string) error {
+	collection := repository.client.Database("todo").Collection("todos")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	deleteTodo := collection.FindOneAndDelete(ctx, bson.M{"id": ID})
+
+	if deleteTodo != nil {
+		return deleteTodo.Err()
+	}
+
+	return nil
 }

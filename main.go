@@ -31,6 +31,7 @@ func SetupApp(api *Api) *fiber.App {
 	app.Get("/todos",api.HandleGetTodos)
 	app.Get("/todos/:id",api.HandleGetTodo)
 	app.Put("todos/:id",api.HandleUpdateTodo)
+	app.Delete("todos/:id",api.HandleDeleteTodo)
 	
 	return app
 }
