@@ -87,3 +87,29 @@ func (repository Repository) GetTodo(ID string) (*model.Todo, error){
 
 	return todo, nil
 }
+
+func (repository *Repository) editTodo(todoDTO model.TodoDTO, ID string) (model.Todo, error) {
+	collection := repository.client.Database("todo").Collection("todos")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	updateTodo := bson.M{
+		"id":            ID,
+		"name":          todoDTO.Name,
+		"description":   todoDTO.Description,
+	}
+
+	_, err := collection.ReplaceOne(ctx, bson.M{"id": ID}, updateTodo)
+
+	if err != nil {
+		return model.Todo{}, err
+	}
+
+	updatedTodo, err := repository.GetTodo(ID)
+
+	if err != nil {
+		return model.Todo{}, err
+	}
+
+	return *updatedTodo, nil
+}

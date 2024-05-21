@@ -64,3 +64,13 @@ func (s *Service) GetTodos() ([]model.Todo, error){
 
 	return todoList,nil
 }
+
+func (s *Service) UpdateTodo(todoDTO model.TodoDTO, ID string) (model.Todo, error) {
+
+	updatedTodo, err := s.Repository.editTodo(todoDTO, ID)
+	if err != nil {
+		return model.Todo{}, nil
+	}
+
+	return updatedTodo, nil
+}
