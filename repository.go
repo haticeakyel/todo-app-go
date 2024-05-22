@@ -96,7 +96,7 @@ func (repository *Repository) editTodo(todoDTO model.TodoDTO, ID string) (model.
 	updateTodo := bson.M{
 		"id":          ID,
 		"name":        todoDTO.Name,
-		"description": todoDTO.Description,
+		"done": todoDTO.Done,
 	}
 
 	_, err := collection.ReplaceOne(ctx, bson.M{"id": ID}, updateTodo)

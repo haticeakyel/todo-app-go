@@ -35,7 +35,7 @@ func (s *Service) CreateTodo (todoDto model.TodoDTO)(*model.Todo, error){
 	todoCreate := model.Todo{
 		ID: GenerateUUID(8),
 		Name: todoDto.Name,
-		Description: todoDto.Description,
+		Done: todoDto.Done,
 	}
 	todoCreated, err := s.Repository.CreateTodo(todoCreate)
 	if err!= nil{
